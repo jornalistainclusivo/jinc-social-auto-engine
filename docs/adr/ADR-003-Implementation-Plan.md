@@ -60,19 +60,23 @@ This formally guarantees domain consistency. The residual risk of a duplicate pu
 ```python
 class OutboxEvent(Base):
     __tablename__ = "outbox_events"
-    
+
     id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
     task_name: Mapped[str] = mapped_column(String(255), nullable=False)
     payload: Mapped[dict] = mapped_column(JSONB, nullable=False)
-    
+
     status: Mapped[str] = mapped_column(String(32), nullable=False, default="PENDING")
     # States: PENDING, CLAIMED, PROCESSED, FAILED
-    
+
     attempt_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    next_attempt_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    next_attempt_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False
+    )
     claimed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     claim_token: Mapped[UUID] = mapped_column(nullable=True)
-    processed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    processed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
     last_error: Mapped[str] = mapped_column(Text, nullable=True)
 ```
 

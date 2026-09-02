@@ -333,10 +333,10 @@ This is a real failure mode with a straightforward prevention mechanism.
 **Permitted transaction boundary:**
 
 ```python
-async with session.begin():           # CORRECT scope for defer_async()
-    await repo.transition_cas(...)    # CAS UPDATE
-    await repo.insert_audit(...)      # audit INSERT
-    await task.defer_async(...)       # job enqueue — OUTERMOST SCOPE ONLY
+async with session.begin():  # CORRECT scope for defer_async()
+    await repo.transition_cas(...)  # CAS UPDATE
+    await repo.insert_audit(...)  # audit INSERT
+    await task.defer_async(...)  # job enqueue — OUTERMOST SCOPE ONLY
     # No begin_nested() between session.begin() and this call.
 ```
 
@@ -345,7 +345,7 @@ async with session.begin():           # CORRECT scope for defer_async()
 ```python
 async with session.begin():
     async with session.begin_nested():  # SAVEPOINT
-        await task.defer_async(...)     # PROHIBITED HERE — silent S3 on SAVEPOINT ROLLBACK
+        await task.defer_async(...)  # PROHIBITED HERE — silent S3 on SAVEPOINT ROLLBACK
 ```
 
 ---

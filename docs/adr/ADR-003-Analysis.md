@@ -440,7 +440,7 @@ async def recovery_scan():
     stuck = await repo.find_content_versions_in(
         status=["VALIDATED", "GENERATED"],
         no_pending_job=True,
-        older_than=timedelta(minutes=5)
+        older_than=timedelta(minutes=5),
     )
     for cv in stuck:
         await dispatch_job(cv)
@@ -563,7 +563,9 @@ The residual risk of duplicate publication is formally accepted by ADR-002 Decis
 # Correct Procrastinate + SQLAlchemy pattern:
 async with session.begin():
     # CAS state transition + audit INSERT (ADR-002 Invariant 1)
-    await content_version_repo.transition(cv_id, 'GENERATED', 'VALIDATED', actor='SYSTEM')
+    await content_version_repo.transition(
+        cv_id, "GENERATED", "VALIDATED", actor="SYSTEM"
+    )
     # Job enqueue as PostgreSQL INSERT in the SAME transaction
     await generate_task.defer_async(content_version_id=str(cv_id))
 # ↑ All committed atomically. S3 is structurally impossible.
@@ -576,7 +578,9 @@ async with session.begin():
 ```python
 # Standard post-commit dispatch (Options B, C, D):
 async with session.begin():
-    await content_version_repo.transition(cv_id, 'GENERATED', 'VALIDATED', actor='SYSTEM')
+    await content_version_repo.transition(
+        cv_id, "GENERATED", "VALIDATED", actor="SYSTEM"
+    )
 # ↑ Committed
 await redis_queue.enqueue(GeneratePlatformContentJob, content_version_id=str(cv_id))
 # ↑ If this crashes → S3

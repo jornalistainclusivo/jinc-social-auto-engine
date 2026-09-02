@@ -488,16 +488,20 @@ This invariant is achievable under Procrastinate when the following conditions a
 ```python
 # INCORRECT — violates Condition 2: defer called outside transaction
 async with session.begin():
-    await content_version_repo.transition(cv_id, 'GENERATED', 'VALIDATED', actor='SYSTEM')
+    await content_version_repo.transition(
+        cv_id, "GENERATED", "VALIDATED", actor="SYSTEM"
+    )
     # Transaction commits here
 await generate_task.defer_async(content_version_id=str(cv_id))
 # ↑ This is a separate operation. If it fails → S3 occurs.
 
 # CORRECT — Transactional Dispatch Invariant satisfied
 async with session.begin():
-    await content_version_repo.transition(cv_id, 'GENERATED', 'VALIDATED', actor='SYSTEM')
+    await content_version_repo.transition(
+        cv_id, "GENERATED", "VALIDATED", actor="SYSTEM"
+    )
     await generate_task.defer_async(content_version_id=str(cv_id))
-# ↑ All committed or all rolled back. S3 is prevented — not by Procrastinate, 
+# ↑ All committed or all rolled back. S3 is prevented — not by Procrastinate,
 #   but by correct implementation of this invariant.
 ```
 
@@ -724,10 +728,11 @@ Procrastinate tables must be excluded from Alembic's `autogenerate` via the `inc
 # alembic/env.py — required configuration
 PROCRASTINATE_TABLES = {
     "procrastinate_jobs",
-    "procrastinate_events", 
+    "procrastinate_events",
     "procrastinate_periodic_defers",
     "procrastinate_versions",
 }
+
 
 def include_name(name, type_, parent_names):
     if type_ == "table":

@@ -113,7 +113,7 @@ async with session.begin():
     raw_conn = await session.connection()
     # Tell Procrastinate to use this specific connection for this defer call
     # The exact API depends on Procrastinate version and may require:
-    # - Using App.open_async(conn=raw_conn) 
+    # - Using App.open_async(conn=raw_conn)
     # - Or passing connector=... to the defer call
     # This is NOT the standard usage pattern shown in basic Procrastinate examples
 ```
@@ -493,14 +493,14 @@ This is correct behavior IF the application correctly implements this check. The
 async def publish_content(content_version_id: str) -> None:
     # BUG: not checking CAS result
     await session.execute(
-        text("UPDATE content_versions SET status = 'PUBLISHING' WHERE id = :id AND status = 'SCHEDULED'"),
-        {"id": content_version_id}
+        text(
+            "UPDATE content_versions SET status = 'PUBLISHING' WHERE id = :id AND status = 'SCHEDULED'"
+        ),
+        {"id": content_version_id},
     )
     # Developer forgot: if rows_affected == 0, stop here
     # Continues to create PublicationAttempt regardless
-    await session.execute(
-        text("INSERT INTO publication_attempts ..."), {...}
-    )
+    await session.execute(text("INSERT INTO publication_attempts ..."), {...})
     # External API call made even if CAS failed
 ```
 
