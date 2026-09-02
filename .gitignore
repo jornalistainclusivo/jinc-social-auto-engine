@@ -1,0 +1,28 @@
+# Ignore generated files
+
+brainstorming.md
+.agent/
+.agents/
+
+# Python caches and artifacts
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.pyc
+dist/
+build/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Secrets and local configurations
+.env
+.env.*
+.DS_Store
+.idea/
+.vscode/

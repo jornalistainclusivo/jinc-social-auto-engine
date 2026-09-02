@@ -1,0 +1,30 @@
+```mermaid
+C4Container
+    title Diagrama de Containers - JincSAE (Jornalista Inclusivo Social Automation)
+
+    Person(editor, "Equipe Editorial", "Realiza a auditoria final, editando ou aprovando as publicações geradas.")
+    System_Ext(wp, "WordPress", "Dispara webhooks de publicação.")
+    System_Ext(llm, "Provedores de LLM", "Executam análise e geração de texto baseados no artigo.")
+    System_Ext(social, "Redes Sociais (APIs)", "Recebem publicações agendadas e aprovadas.")
+
+    Container_Boundary(jincsae, "JincSAE Engine") {
+        Container(api, "API Application", "[Proposto] Python/FastAPI ou TS/NestJS", "Ponto de entrada de Webhooks, expõe endpoints internos para front-end de revisão, coordena Ingestion.")
+        
+        Container(worker, "Background Worker", "[Proposto] Celery, BullMQ ou Temporal", "Executa tarefas pesadas isoladas: chamadas HTTP ao LLM com retry, validações longas e publicação final.")
+        
+        ContainerDb(db, "Relational Database", "[Proposto] PostgreSQL", "Guarda Articles, EditorialBriefs, SocialContents e ApprovalStates. Garantia de rastreabilidade e log de auditoria.")
+        
+        ContainerDb(queue, "Message Broker / Queue", "[Proposto] Redis ou RabbitMQ", "Fila assíncrona garantindo idempotência e resiliência no processamento de eventos do sistema.")
+    }
+
+    Rel(wp, api, "Envia Webhook (post_published)", "HTTPS / JSON")
+    Rel(editor, api, "Faz curadoria e aprova conteúdos (Dashboard UI)", "HTTPS / REST")
+    
+    Rel(api, db, "Registra eventos de entrada e persiste estados", "SQL")
+    Rel(api, queue, "Despacha jobs de análise/geração", "TCP")
+    Rel(queue, worker, "Consome jobs assíncronos", "TCP")
+    Rel(worker, db, "Lê briefs, persiste conteúdos gerados e transiciona estados de máquina", "SQL")
+    
+    Rel(worker, llm, "Orquestra prompts estruturados e recebe json", "HTTPS")
+    Rel(worker, social, "Executa publicação aos canais após status de aprovação", "HTTPS")
+```

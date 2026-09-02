@@ -1,0 +1,31 @@
+```mermaid
+C4Context
+    title Diagrama de Contexto de Sistema - JincSAE (Jornalista Inclusivo Social Automation)
+
+    Person(editor, "Equipe Editorial", "Revisa, edita, aprova e agenda os conteúdos sociais gerados.")
+    Person(author, "Jornalista / Autor", "Gera artigos originais na plataforma WordPress e acompanha metadados editoriais.")
+    
+    System_Ext(wp, "WordPress (Jornalista Inclusivo)", "Fonte de artigos publicados (Truth Source Canônico). Origina webhooks de publicação.")
+    
+    System(jincsae, "JincSAE Engine", "Motor de automação que ingere artigos, orquestra extração de briefs, gera conteúdos multiplataforma, garante validação rigorosa e submete à revisão antes de publicar.")
+    
+    System_Ext(llm, "Provedores de LLM", "Serviços de IA (ex: OpenAI, Anthropic) para análise estruturada e geração adaptativa (Componentes Não Confiáveis).")
+    
+    System_Ext(linkedin, "API LinkedIn", "Destino para postagens de foco profissional.")
+    System_Ext(facebook, "API Facebook", "Destino para compartilhamento social engajado.")
+    System_Ext(instagram, "API Instagram", "Destino para formatos visuais e textuais engajadores.")
+    System_Ext(bluesky, "API Bluesky", "Destino para comunicações concisas e em tempo real.")
+
+    Rel(author, wp, "Escreve e pública artigos jornalísticos")
+    Rel(wp, jincsae, "Dispara evento de publicação (Webhook)", "HTTPS / JSON")
+    
+    Rel(jincsae, llm, "Envia artigos, instruções de prompt e solicita extração via Schemas", "HTTPS")
+    Rel(llm, jincsae, "Retorna respostas analíticas estruturadas", "JSON")
+    
+    Rel(editor, jincsae, "Valida, ajusta, aprova ou rejeita conteúdos, autorizando publicação", "UI / API")
+    
+    Rel(jincsae, linkedin, "Publica e rastreia publicações aprovadas", "HTTPS")
+    Rel(jincsae, facebook, "Publica publicações aprovadas", "HTTPS")
+    Rel(jincsae, instagram, "Publica publicações aprovadas", "HTTPS")
+    Rel(jincsae, bluesky, "Publica publicações aprovadas", "HTTPS")
+```
