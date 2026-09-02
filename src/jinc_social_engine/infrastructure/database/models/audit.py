@@ -10,7 +10,7 @@ from sqlalchemy.sql import func
 from .base import UUID_PK, Base, TimestampTZ
 
 
-class ActorType(str, enum.Enum):
+class ActorType(enum.StrEnum):
     HUMAN = "HUMAN"
     SYSTEM = "SYSTEM"
     WORKER = "WORKER"
@@ -34,5 +34,7 @@ class ContentVersionTransition(Base):
         Enum(ActorType, name="actor_type_enum"), nullable=False
     )
     reason: Mapped[str] = mapped_column(String, nullable=False)
-    metadata_: Mapped[dict[str, Any] | None] = mapped_column("metadata", JSONB, nullable=True)
+    metadata_: Mapped[dict[str, Any] | None] = mapped_column(
+        "metadata", JSONB, nullable=True
+    )
     timestamp: Mapped[TimestampTZ] = mapped_column(server_default=func.now())

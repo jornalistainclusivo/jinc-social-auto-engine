@@ -1,13 +1,12 @@
+# ruff: noqa: E402, E501
 import asyncio
+import os
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
-from alembic import context
-
-import os
 
 config = context.config
 if os.environ.get("DATABASE_URL"):
@@ -21,9 +20,11 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 import sys
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..')))
 
 from jinc_social_engine.infrastructure.database.models import Base
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,

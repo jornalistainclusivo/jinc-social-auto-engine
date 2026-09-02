@@ -1,11 +1,11 @@
 import os
+
 import pytest
 import pytest_asyncio
+from alembic import command
+from alembic.config import Config
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from testcontainers.postgres import PostgresContainer
-
-from alembic.config import Config
-from alembic import command
 
 
 @pytest.fixture(scope="session")
@@ -21,13 +21,13 @@ def postgres_url():
 def apply_migrations(postgres_url):
     # Set DATABASE_URL for env.py
     os.environ["DATABASE_URL"] = postgres_url
-    
+
     # Run Alembic migrations
     alembic_cfg = Config("alembic.ini")
     command.upgrade(alembic_cfg, "head")
-    
+
     yield
-    
+
     # Optionally, we could downgrade or just let the container die
     pass
 

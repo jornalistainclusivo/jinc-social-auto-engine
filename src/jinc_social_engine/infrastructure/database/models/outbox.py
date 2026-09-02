@@ -10,7 +10,7 @@ from sqlalchemy.sql import func
 from .base import UUID_PK, Base, TimestampTZ
 
 
-class OutboxStatus(str, enum.Enum):
+class OutboxStatus(enum.StrEnum):
     PENDING = "PENDING"
     PROCESSED = "PROCESSED"
 

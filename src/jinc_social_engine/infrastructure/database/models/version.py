@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .base import UUID_PK, Base, SoftDeleteMixin, TimestampMixin
 
 
-class ContentVersionStatus(str, enum.Enum):
+class ContentVersionStatus(enum.StrEnum):
     GENERATED = "GENERATED"
     VALIDATED = "VALIDATED"
     PENDING_REVIEW = "PENDING_REVIEW"
@@ -36,7 +36,9 @@ class ContentVersion(Base, TimestampMixin, SoftDeleteMixin):
 
     __table_args__ = (
         CheckConstraint(
-            "status IN ('GENERATED', 'VALIDATED', 'PENDING_REVIEW', 'APPROVED', 'REJECTED', 'SCHEDULED', 'PUBLISHING', 'PUBLISH_FAILED', 'PUBLISHED')",
+            "status IN ('GENERATED', 'VALIDATED', 'PENDING_REVIEW', "
+            "'APPROVED', 'REJECTED', 'SCHEDULED', 'PUBLISHING', "
+            "'PUBLISH_FAILED', 'PUBLISHED')",
             name="ck_content_versions_status",
         ),
         Index(

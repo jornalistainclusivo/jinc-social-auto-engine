@@ -12,9 +12,9 @@ if __name__ == "__main__":
         # Convert to asyncpg URL for alembic
         async_url = db_url.replace("postgresql+psycopg2://", "postgresql+asyncpg://")
         os.environ["DATABASE_URL"] = async_url
-        
+
         print(f"PostgreSQL started. DATABASE_URL={async_url}")
         print("Running Alembic revision --autogenerate...")
-        
+
         sys.argv = ["alembic", "revision", "--autogenerate", "-m", "Initial migration"]
         alembic_main()

@@ -10,7 +10,7 @@ from sqlalchemy.sql import func
 from .base import UUID_PK, Base, TimestampTZ
 
 
-class ApprovalDecisionType(str, enum.Enum):
+class ApprovalDecisionType(enum.StrEnum):
     APPROVED = "APPROVED"
     REJECTED = "REJECTED"
 

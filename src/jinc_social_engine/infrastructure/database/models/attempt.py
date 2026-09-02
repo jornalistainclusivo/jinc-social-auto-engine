@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from .base import UUID_PK, Base, TimestampMixin
 
 
-class PublicationAttemptStatus(str, enum.Enum):
+class PublicationAttemptStatus(enum.StrEnum):
     PENDING = "PENDING"
     SUCCESS = "SUCCESS"
     FAILED = "FAILED"

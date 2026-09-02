@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import Annotated, Any
+from typing import Annotated
 
 from sqlalchemy import DateTime, MetaData
 from sqlalchemy.ext.asyncio import AsyncAttrs
