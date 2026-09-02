@@ -25,4 +25,4 @@ env/
 .env.*
 .DS_Store
 .idea/
-.vscode/
+.vscode/jincsae.egg-info/
