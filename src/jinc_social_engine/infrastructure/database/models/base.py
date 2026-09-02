@@ -33,6 +33,7 @@ class Base(AsyncAttrs, DeclarativeBase):
 
 class TimestampMixin:
     """Mixin for created_at and updated_at."""
+
     created_at: Mapped[TimestampTZ] = mapped_column(server_default=func.now())
     updated_at: Mapped[TimestampTZ] = mapped_column(
         server_default=func.now(), onupdate=func.now()
@@ -41,4 +42,5 @@ class TimestampMixin:
 
 class SoftDeleteMixin:
     """Mixin for soft-delete support."""
+
     deleted_at: Mapped[TimestampTZ | None] = mapped_column(default=None)

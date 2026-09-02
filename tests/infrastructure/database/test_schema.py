@@ -21,6 +21,7 @@ async def test_article_insertion(db_session):
 
     # We need a timezone aware datetime for TIMESTAMPTZ
     from datetime import datetime
+
     article.published_at = datetime.now(UTC)
 
     db_session.add(article)

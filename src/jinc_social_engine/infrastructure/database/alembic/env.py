@@ -12,7 +12,10 @@ config = context.config
 if os.environ.get("DATABASE_URL"):
     config.set_main_option("sqlalchemy.url", os.environ["DATABASE_URL"])
 elif not config.get_main_option("sqlalchemy.url"):
-    config.set_main_option("sqlalchemy.url", "postgresql+asyncpg://postgres:postgres@localhost:5432/jincsae")
+    config.set_main_option(
+        "sqlalchemy.url",
+        "postgresql+asyncpg://postgres:postgres@localhost:5432/jincsae",
+    )
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -21,7 +24,9 @@ if config.config_file_name is not None:
 
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..')))
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+)
 
 from jinc_social_engine.infrastructure.database.models import Base
 
