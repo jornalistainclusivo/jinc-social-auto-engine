@@ -6,7 +6,11 @@ authors = [
     { name = "Jornalista Inclusivo" }
 ]
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "sqlalchemy>=2.0.0",
+    "asyncpg>=0.29.0",
+    "alembic>=1.13.0"
+]
 
 [project.optional-dependencies]
 dev = [
@@ -15,6 +19,7 @@ dev = [
     "pytest-cov>=4.1.0",
     "mypy>=1.9.0",
     "ruff>=0.3.0",
+    "testcontainers>=4.0.0"
 ]
 
 [tool.ruff]
@@ -39,3 +44,4 @@ minversion = "8.0"
 testpaths = ["tests"]
 norecursedirs = ["gate1"]
 asyncio_mode = "auto"
+pythonpath = ["src"]
