@@ -12,12 +12,16 @@ class UpdateVersionStatusUseCase:
         try:
             new_status = ContentVersionStatus(command.new_status)
         except ValueError:
-            raise InvariantViolationError(f"Invalid status: {command.new_status}")
+            raise InvariantViolationError(
+                f"Invalid status: {command.new_status}"
+            ) from None
 
         async with self.uow as uow:
             version = await uow.content_versions.load(command.version_id)
             if not version:
-                raise InvariantViolationError(f"Version not found: {command.version_id}")
+                raise InvariantViolationError(
+                    f"Version not found: {command.version_id}"
+                )
 
             old_status = version.status
 
@@ -33,5 +37,8 @@ class UpdateVersionStatusUseCase:
                 aggregate_type="ContentVersion",
                 aggregate_id=str(command.version_id),
                 event_type=f"VersionStatusChangedTo{new_status.value}",
-                payload={"old_status": old_status.value, "new_status": new_status.value},
+                payload={
+                    "old_status": old_status.value,
+                    "new_status": new_status.value,
+                },
             )

@@ -13,12 +13,16 @@ from jinc_social_engine.infrastructure.database.adapters.version_repository impo
 
 
 @pytest.mark.asyncio
-async def test_mapper_identity_no_destructive_updates(async_session: AsyncSession, create_content_version_in_db):
+async def test_mapper_identity_no_destructive_updates(
+    async_session: AsyncSession, create_content_version_in_db
+):
     """
     15.6 Mapper / Identity Test
-    Test ORM -> Domain -> Mutation -> targeted persistence without deleting existing relations.
+    Test ORM -> Domain -> Mutation -> targeted persistence without deleting relations.
     """
-    version_id = await create_content_version_in_db(status=ContentVersionStatus.GENERATED, version=1)
+    version_id = await create_content_version_in_db(
+        status=ContentVersionStatus.GENERATED, version=1
+    )
     repo = SQLAlchemyContentVersionRepository(async_session)
 
     # 1. Load from DB
@@ -38,8 +42,9 @@ async def test_mapper_identity_no_destructive_updates(async_session: AsyncSessio
     version.transition_status(ContentVersionStatus.APPROVED)
     await repo.transition_status(
         aggregate_id=version_id,
-        expected_version=version.version - 1, # transition_status increments the domain version
-        new_state=ContentVersionStatus.APPROVED
+        expected_version=version.version
+        - 1,  # transition_status increments the domain version
+        new_state=ContentVersionStatus.APPROVED,
     )
 
     await async_session.commit()

@@ -27,7 +27,9 @@ class Article:
     deleted_at: datetime | None = None
     editorial_briefs: list[EditorialBrief] = field(default_factory=list)
 
-    def add_brief(self, brief_data: dict[str, Any], created_at: datetime) -> EditorialBrief:
+    def add_brief(
+        self, brief_data: dict[str, Any], created_at: datetime
+    ) -> EditorialBrief:
         brief = EditorialBrief(
             id=uuid.uuid4(),
             article_id=self.id,

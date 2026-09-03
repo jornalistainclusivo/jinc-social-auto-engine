@@ -1,4 +1,3 @@
-
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,13 +9,17 @@ from jinc_social_engine.infrastructure.database.adapters.version_repository impo
 
 
 @pytest.mark.asyncio
-async def test_cas_concurrency(async_session: AsyncSession, create_content_version_in_db):
+async def test_cas_concurrency(
+    async_session: AsyncSession, create_content_version_in_db
+):
     """
     15.2 CAS Concurrency Test
-    Ensures that ConcurrentModificationError is raised when two transactions try to update
+    Ensures ConcurrentModificationError is raised when two transactions try to update
     the same version simultaneously bypassing the CAS check.
     """
-    version_id = await create_content_version_in_db(status=ContentVersionStatus.GENERATED, version=1)
+    version_id = await create_content_version_in_db(
+        status=ContentVersionStatus.GENERATED, version=1
+    )
 
     repo_t1 = SQLAlchemyContentVersionRepository(async_session)
     repo_t2 = SQLAlchemyContentVersionRepository(async_session)
@@ -35,14 +38,14 @@ async def test_cas_concurrency(async_session: AsyncSession, create_content_versi
     await repo_t1.transition_status(
         aggregate_id=version_id,
         expected_version=version_t1.version,
-        new_state=ContentVersionStatus.VALIDATED
+        new_state=ContentVersionStatus.VALIDATED,
     )
-    await async_session.commit() # Flush T1 to DB
+    await async_session.commit()  # Flush T1 to DB
 
     # T2 attempts to transition with outdated expected_version
     with pytest.raises(ConcurrentModificationError):
         await repo_t2.transition_status(
             aggregate_id=version_id,
             expected_version=version_t2.version,
-            new_state=ContentVersionStatus.VALIDATED
+            new_state=ContentVersionStatus.VALIDATED,
         )

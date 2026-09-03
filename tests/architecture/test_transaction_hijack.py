@@ -23,5 +23,7 @@ def test_no_commit_outside_uow():
             if isinstance(node, ast.Call):
                 if isinstance(node.func, ast.Attribute):
                     if node.func.attr in ("commit", "rollback"):
-                        pytest.fail(f"Found forbidden {node.func.attr}() call in {filepath}. "
-                                    f"Only UnitOfWork is allowed to manage transactions.")
+                        pytest.fail(
+                            f"Found forbidden {node.func.attr}() call in {filepath}. "
+                            f"Only UnitOfWork is allowed to manage transactions."
+                        )

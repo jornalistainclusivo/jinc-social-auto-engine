@@ -9,10 +9,12 @@ from jinc_social_engine.infrastructure.database.adapters.version_repository impo
 
 
 @pytest.mark.asyncio
-async def test_append_only_preserves_history(async_session: AsyncSession, create_content_version_in_db):
+async def test_append_only_preserves_history(
+    async_session: AsyncSession, create_content_version_in_db
+):
     """
     15.4 Append-Only Test
-    Ensures that adding a new PublicationAttempt does not delete or overwrite previous ones.
+    Ensures that adding a new PublicationAttempt does not delete or overwrite previous.
     """
     version_id = await create_content_version_in_db()
     repo = SQLAlchemyContentVersionRepository(async_session)
@@ -40,4 +42,8 @@ async def test_append_only_preserves_history(async_session: AsyncSession, create
     # Load again to verify
     version_loaded = await repo.load(version_id)
     assert len(version_loaded.publication_attempts) == 3
-    assert {a.id for a in version_loaded.publication_attempts} == {attempt1.id, attempt2.id, attempt3.id}
+    assert {a.id for a in version_loaded.publication_attempts} == {
+        attempt1.id,
+        attempt2.id,
+        attempt3.id,
+    }

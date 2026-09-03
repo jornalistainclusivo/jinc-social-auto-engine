@@ -38,7 +38,7 @@ class ContentVersionRepository(Protocol):
     ) -> None:
         """
         Executes a CAS (Compare-And-Swap) state transition.
-        Must raise ConcurrentModificationError if the record doesn't match expected_version.
+        Must raise ConcurrentModificationError if record doesn't match expected_version.
         """
         ...
 

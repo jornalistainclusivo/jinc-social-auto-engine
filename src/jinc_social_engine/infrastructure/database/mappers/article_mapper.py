@@ -9,7 +9,9 @@ from jinc_social_engine.infrastructure.database.models.brief import (
 
 class ArticleMapper:
     @staticmethod
-    def to_domain(article_model: ArticleModel, brief_models: list[BriefModel]) -> Article:
+    def to_domain(
+        article_model: ArticleModel, brief_models: list[BriefModel]
+    ) -> Article:
         briefs = [
             EditorialBrief(
                 id=b.id,

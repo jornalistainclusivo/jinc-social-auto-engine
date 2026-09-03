@@ -81,20 +81,30 @@ class ContentVersion:
         allowed_transitions = {
             ContentVersionStatus.GENERATED: [ContentVersionStatus.VALIDATED],
             ContentVersionStatus.VALIDATED: [ContentVersionStatus.PENDING_REVIEW],
-            ContentVersionStatus.PENDING_REVIEW: [ContentVersionStatus.APPROVED, ContentVersionStatus.REJECTED],
+            ContentVersionStatus.PENDING_REVIEW: [
+                ContentVersionStatus.APPROVED,
+                ContentVersionStatus.REJECTED,
+            ],
             ContentVersionStatus.APPROVED: [ContentVersionStatus.SCHEDULED],
             ContentVersionStatus.SCHEDULED: [ContentVersionStatus.PUBLISHING],
-            ContentVersionStatus.PUBLISHING: [ContentVersionStatus.PUBLISHED, ContentVersionStatus.PUBLISH_FAILED],
+            ContentVersionStatus.PUBLISHING: [
+                ContentVersionStatus.PUBLISHED,
+                ContentVersionStatus.PUBLISH_FAILED,
+            ],
             ContentVersionStatus.PUBLISH_FAILED: [ContentVersionStatus.PUBLISHING],
         }
 
         if new_status not in allowed_transitions.get(self.status, []):
-            raise StateTransitionRejected(f"Cannot transition from {self.status} to {new_status}")
+            raise StateTransitionRejected(
+                f"Cannot transition from {self.status} to {new_status}"
+            )
 
         self.status = new_status
         self.version += 1
 
-    def create_attempt(self, worker_id: str, created_at: datetime) -> PublicationAttempt:
+    def create_attempt(
+        self, worker_id: str, created_at: datetime
+    ) -> PublicationAttempt:
         attempt = PublicationAttempt(
             id=uuid.uuid4(),
             content_version_id=self.id,
@@ -108,7 +118,9 @@ class ContentVersion:
         self.publication_attempts.append(attempt)
         return attempt
 
-    def add_validation_result(self, is_valid: bool, errors: dict[str, Any], created_at: datetime) -> ValidationResult:
+    def add_validation_result(
+        self, is_valid: bool, errors: dict[str, Any], created_at: datetime
+    ) -> ValidationResult:
         result = ValidationResult(
             id=uuid.uuid4(),
             content_version_id=self.id,
@@ -119,7 +131,13 @@ class ContentVersion:
         self.validation_results.append(result)
         return result
 
-    def add_approval_decision(self, decision_type: ApprovalDecisionType, actor_id: str, edits_made: dict[str, Any] | None, created_at: datetime) -> ApprovalDecision:
+    def add_approval_decision(
+        self,
+        decision_type: ApprovalDecisionType,
+        actor_id: str,
+        edits_made: dict[str, Any] | None,
+        created_at: datetime,
+    ) -> ApprovalDecision:
         decision = ApprovalDecision(
             id=uuid.uuid4(),
             content_version_id=self.id,

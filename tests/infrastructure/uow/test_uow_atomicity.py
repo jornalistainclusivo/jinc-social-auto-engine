@@ -1,4 +1,3 @@
-
 import pytest
 
 from jinc_social_engine.application.dtos.version import UpdateVersionStatusCommand
@@ -10,13 +9,17 @@ from jinc_social_engine.infrastructure.database.uow import SQLAlchemyUnitOfWork
 
 
 @pytest.mark.asyncio
-async def test_uow_atomicity_rollback_on_error(async_session_factory, create_content_version_in_db):
+async def test_uow_atomicity_rollback_on_error(
+    async_session_factory, create_content_version_in_db
+):
     """
     15.3 Atomicity Test
-    Ensures that if an exception occurs during the Unit of Work, the entire transaction is rolled back,
+    Ensures that if an error occurs during the UoW, the transaction is rolled back,
     including domain state changes and outbox events.
     """
-    version_id = await create_content_version_in_db(status=ContentVersionStatus.GENERATED, version=1)
+    version_id = await create_content_version_in_db(
+        status=ContentVersionStatus.GENERATED, version=1
+    )
 
     uow = SQLAlchemyUnitOfWork(async_session_factory)
 
@@ -27,6 +30,7 @@ async def test_uow_atomicity_rollback_on_error(async_session_factory, create_con
 
     try:
         async with uow as ctx:
+
             async def failing_append(*args, **kwargs):
                 raise ForcedException("Forced failure")
 
@@ -34,9 +38,7 @@ async def test_uow_atomicity_rollback_on_error(async_session_factory, create_con
 
             use_case = UpdateVersionStatusUseCase(uow=ctx)
             command = UpdateVersionStatusCommand(
-                version_id=version_id,
-                expected_version=1,
-                new_status="VALIDATED"
+                version_id=version_id, expected_version=1, new_status="VALIDATED"
             )
 
             await use_case.execute(command)

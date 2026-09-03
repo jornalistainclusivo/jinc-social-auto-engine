@@ -15,7 +15,11 @@ class SQLAlchemyOutboxAdapter(OutboxPort):
         self.session = session
 
     async def append_event(
-        self, aggregate_type: str, aggregate_id: str, event_type: str, payload: dict[str, Any]
+        self,
+        aggregate_type: str,
+        aggregate_id: str,
+        event_type: str,
+        payload: dict[str, Any],
     ) -> None:
         event = OutboxEvent(
             id=uuid.uuid4(),
