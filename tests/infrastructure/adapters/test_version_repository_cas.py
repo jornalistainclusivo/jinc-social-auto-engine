@@ -1,14 +1,12 @@
-import uuid
-from datetime import datetime, timezone
 
 import pytest
-import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import text
 
 from jinc_social_engine.domain.entities.version import ContentVersionStatus
 from jinc_social_engine.domain.exceptions import ConcurrentModificationError
-from jinc_social_engine.infrastructure.database.adapters.version_repository import SQLAlchemyContentVersionRepository
+from jinc_social_engine.infrastructure.database.adapters.version_repository import (
+    SQLAlchemyContentVersionRepository,
+)
 
 
 @pytest.mark.asyncio

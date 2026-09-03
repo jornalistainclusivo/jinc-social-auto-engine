@@ -1,7 +1,7 @@
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 
 @dataclass
@@ -11,7 +11,7 @@ class EditorialBrief:
     brief_data: dict[str, Any]
     created_at: datetime
     updated_at: datetime
-    deleted_at: Optional[datetime] = None
+    deleted_at: datetime | None = None
 
 
 @dataclass
@@ -24,7 +24,7 @@ class Article:
     published_at: datetime
     created_at: datetime
     updated_at: datetime
-    deleted_at: Optional[datetime] = None
+    deleted_at: datetime | None = None
     editorial_briefs: list[EditorialBrief] = field(default_factory=list)
 
     def add_brief(self, brief_data: dict[str, Any], created_at: datetime) -> EditorialBrief:

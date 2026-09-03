@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from jinc_social_engine.application.dtos.article import IngestArticleCommand
 from jinc_social_engine.domain.entities.article import Article
@@ -12,7 +12,7 @@ class IngestArticleUseCase:
 
     async def execute(self, command: IngestArticleCommand) -> uuid.UUID:
         async with self.uow as uow:
-            now = datetime.now(timezone.utc)
+            now = datetime.now(UTC)
             article_id = uuid.uuid4()
             article = Article(
                 id=article_id,

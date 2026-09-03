@@ -5,8 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from jinc_social_engine.domain.entities.article import Article
 from jinc_social_engine.domain.ports.repositories import ArticleRepository
-from jinc_social_engine.infrastructure.database.mappers.article_mapper import ArticleMapper
-from jinc_social_engine.infrastructure.database.models.article import Article as ArticleModel
+from jinc_social_engine.infrastructure.database.mappers.article_mapper import (
+    ArticleMapper,
+)
+from jinc_social_engine.infrastructure.database.models.article import (
+    Article as ArticleModel,
+)
 from jinc_social_engine.infrastructure.database.models.brief import (
     EditorialBrief as BriefModel,
 )
@@ -22,7 +26,7 @@ class SQLAlchemyArticleRepository(ArticleRepository):
         )
         result = await self.session.execute(stmt)
         article_model = result.scalar_one_or_none()
-        
+
         if not article_model:
             return None
 

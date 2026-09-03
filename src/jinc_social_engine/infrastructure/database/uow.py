@@ -34,12 +34,12 @@ class SQLAlchemyUnitOfWork(UnitOfWorkPort):
     ) -> None:
         if self.session is None:
             return
-            
+
         if exc_type is not None:
             await self.rollback()
         else:
             await self.commit()
-            
+
         await self.session.close()
 
     async def commit(self) -> None:

@@ -1,11 +1,13 @@
+import uuid
 from typing import Any
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql import func
-import uuid
 
 from jinc_social_engine.domain.ports.outbox import OutboxPort
-from jinc_social_engine.infrastructure.database.models.outbox import OutboxEvent, OutboxStatus
+from jinc_social_engine.infrastructure.database.models.outbox import (
+    OutboxEvent,
+    OutboxStatus,
+)
 
 
 class SQLAlchemyOutboxAdapter(OutboxPort):

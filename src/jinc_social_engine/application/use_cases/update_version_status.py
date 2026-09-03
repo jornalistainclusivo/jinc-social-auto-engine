@@ -18,7 +18,7 @@ class UpdateVersionStatusUseCase:
             version = await uow.content_versions.load(command.version_id)
             if not version:
                 raise InvariantViolationError(f"Version not found: {command.version_id}")
-                
+
             old_status = version.status
 
             version.transition_status(new_status)

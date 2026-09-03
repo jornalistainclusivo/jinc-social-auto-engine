@@ -1,11 +1,15 @@
-import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from jinc_social_engine.domain.entities.version import ContentVersionStatus, ApprovalDecisionType
-from jinc_social_engine.infrastructure.database.adapters.version_repository import SQLAlchemyContentVersionRepository
+from jinc_social_engine.domain.entities.version import (
+    ApprovalDecisionType,
+    ContentVersionStatus,
+)
+from jinc_social_engine.infrastructure.database.adapters.version_repository import (
+    SQLAlchemyContentVersionRepository,
+)
 
 
 @pytest.mark.asyncio
@@ -19,9 +23,9 @@ async def test_mapper_identity_no_destructive_updates(async_session: AsyncSessio
 
     # 1. Load from DB
     version = await repo.load(version_id)
-    
+
     # 2. Add an approval decision
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     decision = version.add_approval_decision(
         decision_type=ApprovalDecisionType.APPROVED,
         actor_id="reviewer-1",
@@ -29,7 +33,7 @@ async def test_mapper_identity_no_destructive_updates(async_session: AsyncSessio
         created_at=now,
     )
     await repo.append_approval_decision(version_id, decision)
-    
+
     # 3. Transition status
     version.transition_status(ContentVersionStatus.APPROVED)
     await repo.transition_status(
@@ -37,7 +41,7 @@ async def test_mapper_identity_no_destructive_updates(async_session: AsyncSessio
         expected_version=version.version - 1, # transition_status increments the domain version
         new_state=ContentVersionStatus.APPROVED
     )
-    
+
     await async_session.commit()
 
     # 4. Verify no loss of history or missing data

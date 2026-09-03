@@ -1,6 +1,10 @@
 from jinc_social_engine.domain.entities.article import Article, EditorialBrief
-from jinc_social_engine.infrastructure.database.models.article import Article as ArticleModel
-from jinc_social_engine.infrastructure.database.models.brief import EditorialBrief as BriefModel
+from jinc_social_engine.infrastructure.database.models.article import (
+    Article as ArticleModel,
+)
+from jinc_social_engine.infrastructure.database.models.brief import (
+    EditorialBrief as BriefModel,
+)
 
 
 class ArticleMapper:

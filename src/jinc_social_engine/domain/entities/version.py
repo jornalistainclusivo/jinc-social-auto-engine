@@ -2,7 +2,7 @@ import enum
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Any, Optional
+from typing import Any
 
 from jinc_social_engine.domain.exceptions import StateTransitionRejected
 
@@ -45,7 +45,7 @@ class ApprovalDecision:
     content_version_id: uuid.UUID
     decision_type: ApprovalDecisionType
     actor_id: str
-    edits_made: Optional[dict[str, Any]]
+    edits_made: dict[str, Any] | None
     created_at: datetime
 
 
@@ -55,8 +55,8 @@ class PublicationAttempt:
     content_version_id: uuid.UUID
     worker_id: str
     status: PublicationAttemptStatus
-    external_publication_id: Optional[str]
-    failure_reason: Optional[str]
+    external_publication_id: str | None
+    failure_reason: str | None
     created_at: datetime
     updated_at: datetime
 
@@ -71,7 +71,7 @@ class ContentVersion:
     created_at: datetime
     updated_at: datetime
     version: int = 1
-    deleted_at: Optional[datetime] = None
+    deleted_at: datetime | None = None
 
     validation_results: list[ValidationResult] = field(default_factory=list)
     approval_decisions: list[ApprovalDecision] = field(default_factory=list)
@@ -119,7 +119,7 @@ class ContentVersion:
         self.validation_results.append(result)
         return result
 
-    def add_approval_decision(self, decision_type: ApprovalDecisionType, actor_id: str, edits_made: Optional[dict[str, Any]], created_at: datetime) -> ApprovalDecision:
+    def add_approval_decision(self, decision_type: ApprovalDecisionType, actor_id: str, edits_made: dict[str, Any] | None, created_at: datetime) -> ApprovalDecision:
         decision = ApprovalDecision(
             id=uuid.uuid4(),
             content_version_id=self.id,

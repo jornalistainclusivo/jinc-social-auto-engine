@@ -1,8 +1,8 @@
-from typing import Protocol
 from types import TracebackType
+from typing import Protocol
 
-from .repositories import ArticleRepository, ContentVersionRepository
 from .outbox import OutboxPort
+from .repositories import ArticleRepository, ContentVersionRepository
 
 
 class UnitOfWorkPort(Protocol):

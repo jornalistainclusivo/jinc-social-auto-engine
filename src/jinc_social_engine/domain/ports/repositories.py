@@ -1,10 +1,9 @@
 import uuid
-from typing import Any, Protocol
+from typing import Protocol
 
 from jinc_social_engine.domain.entities.article import Article
 from jinc_social_engine.domain.entities.version import (
     ApprovalDecision,
-    ApprovalDecisionType,
     ContentVersion,
     ContentVersionStatus,
     PublicationAttempt,

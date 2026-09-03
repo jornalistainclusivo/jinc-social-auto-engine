@@ -1,11 +1,11 @@
-import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from jinc_social_engine.domain.entities.version import PublicationAttemptStatus
-from jinc_social_engine.infrastructure.database.adapters.version_repository import SQLAlchemyContentVersionRepository
+from jinc_social_engine.infrastructure.database.adapters.version_repository import (
+    SQLAlchemyContentVersionRepository,
+)
 
 
 @pytest.mark.asyncio
@@ -20,8 +20,8 @@ async def test_append_only_preserves_history(async_session: AsyncSession, create
     version = await repo.load(version_id)
     assert len(version.publication_attempts) == 0
 
-    now = datetime.now(timezone.utc)
-    
+    now = datetime.now(UTC)
+
     # Attempt 1
     attempt1 = version.create_attempt(worker_id="worker-1", created_at=now)
     await repo.append_publication_attempt(version_id, attempt1)
