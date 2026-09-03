@@ -33,6 +33,7 @@ class ContentVersion(Base, TimestampMixin, SoftDeleteMixin):
         nullable=False,
         index=True,
     )
+    version: Mapped[int] = mapped_column(nullable=False, server_default="1", default=1)
 
     __table_args__ = (
         CheckConstraint(
