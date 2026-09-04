@@ -21,7 +21,7 @@ async def test_mapper_identity_no_destructive_updates(
     Test ORM -> Domain -> Mutation -> targeted persistence without deleting relations.
     """
     version_id = await create_content_version_in_db(
-        status=ContentVersionStatus.GENERATED, version=1
+        status=ContentVersionStatus.PENDING_REVIEW, version=1
     )
     repo = SQLAlchemyContentVersionRepository(async_session)
 
