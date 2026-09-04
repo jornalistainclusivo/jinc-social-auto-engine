@@ -45,4 +45,5 @@ minversion = "8.0"
 testpaths = ["tests"]
 norecursedirs = ["gate1"]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
 pythonpath = ["src"]
