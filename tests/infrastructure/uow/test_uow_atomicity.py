@@ -36,7 +36,7 @@ async def test_uow_atomicity_rollback_on_error(
     with patch.object(
         SQLAlchemyOutboxAdapter,
         "append_event",
-        side_effect=ForcedException("Forced failure")
+        side_effect=ForcedException("Forced failure"),
     ):
         use_case = UpdateVersionStatusUseCase(uow=uow)
         command = UpdateVersionStatusCommand(
