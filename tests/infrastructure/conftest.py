@@ -10,9 +10,6 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from testcontainers.community.postgres import PostgresContainer
 
 from jinc_social_engine.domain.entities.version import ContentVersionStatus
-from jinc_social_engine.infrastructure.database.models.version import (
-    ContentVersionModel,
-)
 
 
 @pytest.fixture(scope="session")
@@ -74,18 +71,52 @@ async def create_content_version_in_db(async_session_factory):
         status: ContentVersionStatus = ContentVersionStatus.GENERATED,
         version: int = 1,
     ) -> uuid.UUID:
+        from jinc_social_engine.infrastructure.database.models.article import Article
+        from jinc_social_engine.infrastructure.database.models.brief import (
+            EditorialBrief,
+        )
+        from jinc_social_engine.infrastructure.database.models.version import (
+            ContentVersion,
+        )
+
+        article_id = uuid.uuid4()
+        brief_id = uuid.uuid4()
         version_id = uuid.uuid4()
-        model = ContentVersionModel(
+
+        now = datetime.now(UTC)
+
+        article = Article(
+            id=article_id,
+            source_id=f"test-source-{uuid.uuid4()}",
+            wp_post_id=int(now.timestamp()),
+            url="http://test.com",
+            hash=str(uuid.uuid4()),
+            published_at=now,
+            created_at=now,
+            updated_at=now,
+        )
+
+        brief = EditorialBrief(
+            id=brief_id,
+            article_id=article_id,
+            brief_data={"test": "data"},
+            created_at=now,
+            updated_at=now,
+        )
+
+        model = ContentVersion(
             id=version_id,
-            article_id=uuid.uuid4(),
-            worker_id="test-worker",
-            content={"title": "Test Title", "body": "Test Body"},
+            brief_id=brief_id,
+            platform="twitter",
+            content="test content",
             version=version,
-            status=status.value,
-            created_at=datetime.now(UTC),
-            updated_at=datetime.now(UTC),
+            status=status,
+            created_at=now,
+            updated_at=now,
         )
         async with async_session_factory() as session:
+            session.add(article)
+            session.add(brief)
             session.add(model)
             await session.commit()
         return version_id
