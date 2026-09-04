@@ -27,17 +27,17 @@ async def test_append_only_preserves_history(
     # Attempt 1
     attempt1 = version.create_attempt(worker_id="worker-1", created_at=now)
     await repo.append_publication_attempt(version_id, attempt1)
-    await async_session.commit()
+    await async_session.flush()
 
     # Attempt 2
     attempt2 = version.create_attempt(worker_id="worker-2", created_at=now)
     await repo.append_publication_attempt(version_id, attempt2)
-    await async_session.commit()
+    await async_session.flush()
 
     # Attempt 3
     attempt3 = version.create_attempt(worker_id="worker-3", created_at=now)
     await repo.append_publication_attempt(version_id, attempt3)
-    await async_session.commit()
+    await async_session.flush()
 
     # Load again to verify
     version_loaded = await repo.load(version_id)

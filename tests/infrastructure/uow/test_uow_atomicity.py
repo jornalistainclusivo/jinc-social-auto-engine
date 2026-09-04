@@ -27,24 +27,25 @@ async def test_uow_atomicity_rollback_on_error(
         pass
 
     # We mock the outbox to raise an exception after the state transition
+    from unittest.mock import patch
 
-    try:
-        async with uow as ctx:
+    from jinc_social_engine.infrastructure.database.adapters.outbox_adapter import (
+        SQLAlchemyOutboxAdapter,
+    )
 
-            async def failing_append(*args, **kwargs):
-                raise ForcedException("Forced failure")
-
-            ctx.outbox.append_event = failing_append
-
-            use_case = UpdateVersionStatusUseCase(uow=ctx)
-            command = UpdateVersionStatusCommand(
-                version_id=version_id, expected_version=1, new_status="VALIDATED"
-            )
-
+    with patch.object(
+        SQLAlchemyOutboxAdapter,
+        "append_event",
+        side_effect=ForcedException("Forced failure")
+    ):
+        use_case = UpdateVersionStatusUseCase(uow=uow)
+        command = UpdateVersionStatusCommand(
+            version_id=version_id, expected_version=1, new_status="VALIDATED"
+        )
+        try:
             await use_case.execute(command)
-
-    except ForcedException:
-        pass
+        except ForcedException:
+            pass
 
     # Verify rollback in a new UoW
     async with SQLAlchemyUnitOfWork(async_session_factory) as verify_uow:

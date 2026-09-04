@@ -40,7 +40,6 @@ async def test_cas_concurrency(
         expected_version=version_t1.version,
         new_state=ContentVersionStatus.VALIDATED,
     )
-    await async_session.commit()  # Flush T1 to DB
 
     # T2 attempts to transition with outdated expected_version
     with pytest.raises(ConcurrentModificationError):

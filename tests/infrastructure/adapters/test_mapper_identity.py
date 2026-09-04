@@ -47,7 +47,7 @@ async def test_mapper_identity_no_destructive_updates(
         new_state=ContentVersionStatus.APPROVED,
     )
 
-    await async_session.commit()
+    await async_session.flush()
 
     # 4. Verify no loss of history or missing data
     version_reloaded = await repo.load(version_id)
