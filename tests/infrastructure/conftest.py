@@ -1,4 +1,6 @@
 import os
+import uuid
+from datetime import UTC, datetime
 
 import pytest
 import pytest_asyncio
@@ -6,6 +8,11 @@ from alembic import command
 from alembic.config import Config
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from testcontainers.community.postgres import PostgresContainer
+
+from jinc_social_engine.domain.entities.version import ContentVersionStatus
+from jinc_social_engine.infrastructure.database.models.version import (
+    ContentVersionModel,
+)
 
 
 @pytest.fixture(scope="session")
@@ -49,3 +56,38 @@ async def db_session(async_engine):
         async with session.begin():
             yield session
             await session.rollback()
+
+
+@pytest.fixture
+def async_session(db_session):
+    return db_session
+
+
+@pytest.fixture
+def async_session_factory(async_engine):
+    return async_sessionmaker(async_engine, expire_on_commit=False, class_=AsyncSession)
+
+
+@pytest_asyncio.fixture
+async def create_content_version_in_db(async_session_factory):
+    async def _create(
+        status: ContentVersionStatus = ContentVersionStatus.GENERATED,
+        version: int = 1,
+    ) -> uuid.UUID:
+        version_id = uuid.uuid4()
+        model = ContentVersionModel(
+            id=version_id,
+            article_id=uuid.uuid4(),
+            worker_id="test-worker",
+            content={"title": "Test Title", "body": "Test Body"},
+            version=version,
+            status=status.value,
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
+        )
+        async with async_session_factory() as session:
+            session.add(model)
+            await session.commit()
+        return version_id
+
+    return _create
