@@ -27,3 +27,4 @@ env/
 .idea/
 .vscode/
 jincsae.egg-info/
+branch_protection_backup.json
